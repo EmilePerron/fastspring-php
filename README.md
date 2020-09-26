@@ -30,6 +30,9 @@ $orders = Order::findAll();
 // Find single by ID/path
 $product = Product::find('mytestproduct');
 
+// Find all with filters
+$orders = Order::findBy(['products' => 'mytestproduct']);
+
 // Find by IDs
 $subscriptions = Subscription::find(['2XzdAW3_SMSl1I18ccj26A', '9zGdAW3_AM1L6I18cqj21Y']);
 
@@ -88,7 +91,7 @@ At the moment, this library does not expose every feature of the FastSpring API 
 Here is a list of things that are not available with the library at the moment:
 
 - the `save()` method for entities (partially developed in `AbstractEntity`)
-- search filters functionality in entities
+- URL parameters for non-filtered requests (ex.: for localization)
 - batch requests
 
 ## Contributing
