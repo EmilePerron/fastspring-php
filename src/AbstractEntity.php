@@ -37,12 +37,26 @@ abstract class AbstractEntity implements \ArrayAccess {
             return array_pop($entities);
         }
 
+        // Handle pagination automatically
+        while (isset($response['nextPage']) && $response['nextPage'] != null) {
+            try {
+                $nextPage = intval($response['page']) + 1;
+                $response = FastSpring::get(static::$endpoint, ['page' => $nextPage]);
+                static::checkResponse($response);
+                $pageEntities = static::getEntityArrayFromResponse($response);
+
+                if (is_array($pageEntities) && is_array($entities)) {
+                    $entities = array_merge($entities, $pageEntities);
+                }
+            } catch (\Exeception $e) {}
+        }
+
         return $entities;
     }
 
     public static function findAll()
     {
-        $response = FastSpring::get(static::$endpoint);
+        $response = FastSpring::get(static::$endpoint, ['limit' => 2]);
         static::checkResponse($response);
 
         if (!$response) {
@@ -50,6 +64,20 @@ abstract class AbstractEntity implements \ArrayAccess {
         }
 
         $idsList = static::getResponseBody($response);
+
+        // Handle pagination automatically
+        while (isset($response['nextPage']) && $response['nextPage'] != null) {
+            try {
+                $nextPage = intval($response['page']) + 1;
+                $response = FastSpring::get(static::$endpoint, ['page' => $nextPage]);
+                $pageIdsList = static::getResponseBody($response);
+
+                if (is_array($pageIdsList) && is_array($idsList)) {
+                    $idsList = array_merge($idsList, $pageIdsList);
+                }
+            } catch (\Exeception $e) {}
+        }
+
         return static::find($idsList);
     }
 
