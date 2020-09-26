@@ -16,7 +16,7 @@ class FastSpring {
 		$this->apiPassword = $apiPassword;
 	}
 
-    public function initialize(string $apiUsername, string $apiPassword)
+    public static function initialize(string $apiUsername, string $apiPassword)
     {
         static::$instance = new static($apiUsername, $apiPassword);
     }
