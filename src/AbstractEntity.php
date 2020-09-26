@@ -27,6 +27,19 @@ abstract class AbstractEntity implements \ArrayAccess {
         return $entities;
     }
 
+    public static function findBy(array $filters)
+    {
+        $response = FastSpring::get(static::$endpoint, $filters);
+        static::checkResponse($response);
+        $entities = static::getEntityArrayFromResponse($response);
+
+        if (!is_array($ids)) {
+            return array_pop($entities);
+        }
+
+        return $entities;
+    }
+
     public static function findAll()
     {
         $response = FastSpring::get(static::$endpoint);

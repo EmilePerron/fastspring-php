@@ -114,7 +114,13 @@ class FastSpring {
         $url = $this->host . '/' . trim($endpoint, '/');
 
         if (in_array($method, ['GET', 'DELETE']) && is_array($payload)) {
-            $url .= '/' . implode(',', $payload);
+            // Associative array = filters
+            if (array_keys($payload) !== range(0, count($payload) - 1)) {
+                $url .= '?' . http_build_query($payload);
+            } else {
+                // Regular array = list of ids
+                $url .= '/' . implode(',', $payload);
+            }
         }
 
         return $url;
