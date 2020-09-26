@@ -33,10 +33,6 @@ abstract class AbstractEntity implements \ArrayAccess {
         static::checkResponse($response);
         $entities = static::getEntityArrayFromResponse($response);
 
-        if (!is_array($ids)) {
-            return array_pop($entities);
-        }
-
         // Handle pagination automatically
         while (isset($response['nextPage']) && $response['nextPage'] != null) {
             try {
