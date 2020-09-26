@@ -93,6 +93,7 @@ Here is a list of things that are not available with the library at the moment:
 - the `save()` method for entities (partially developed in `AbstractEntity`)
 - URL parameters for non-filtered requests (ex.: for localization)
 - batch requests
+- scope option (test/live/all)
 
 ## Contributing
 Feel free to submit pull requests on [the GitHub repository](https://github.com/EmilePerron/fastspring-php) if you want to add functionalities or suggest improvements to this library. I will look them over and merge them as soon as possible.
