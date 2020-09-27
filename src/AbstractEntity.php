@@ -44,7 +44,7 @@ abstract class AbstractEntity implements \ArrayAccess {
                 if (is_array($pageEntities) && is_array($entities)) {
                     $entities = array_merge($entities, $pageEntities);
                 }
-            } catch (\Exeception $e) {}
+            } catch (\Exception $e) {}
         }
 
         return $entities;
@@ -52,7 +52,7 @@ abstract class AbstractEntity implements \ArrayAccess {
 
     public static function findAll()
     {
-        $response = FastSpring::get(static::$endpoint, ['limit' => 2]);
+        $response = FastSpring::get(static::$endpoint);
         static::checkResponse($response);
 
         if (!$response) {
@@ -71,7 +71,7 @@ abstract class AbstractEntity implements \ArrayAccess {
                 if (is_array($pageIdsList) && is_array($idsList)) {
                     $idsList = array_merge($idsList, $pageIdsList);
                 }
-            } catch (\Exeception $e) {}
+            } catch (\Exception $e) {}
         }
 
         return static::find($idsList);
