@@ -47,7 +47,7 @@ class FastSpring {
             return is_string($response) ? json_decode($response, true) : $response;
         }
 
-        throw new \Exception(sprintf('Error %s reported by FastSpring\'s API for your %s request to the "%s" endpoint', $info['http_code'], $method, $endpoint));
+        throw new \Exception(sprintf('Error %s reported by FastSpring\'s API for your %s request to the "%s" endpoint. Response: %s', $info['http_code'], $method, $endpoint, json_encode($response)));
     }
 
     protected static function instance()
