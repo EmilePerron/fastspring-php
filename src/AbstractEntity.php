@@ -13,6 +13,9 @@ abstract class AbstractEntity implements \ArrayAccess {
         $this->record = $record;
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function find($ids)
     {
         $idsList = (array) $ids;
@@ -27,6 +30,9 @@ abstract class AbstractEntity implements \ArrayAccess {
         return $entities;
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function findBy(array $filters)
     {
         $response = FastSpring::get(static::$endpoint, $filters);
@@ -50,6 +56,9 @@ abstract class AbstractEntity implements \ArrayAccess {
         return $entities;
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function findAll()
     {
         $response = FastSpring::get(static::$endpoint);
@@ -77,6 +86,9 @@ abstract class AbstractEntity implements \ArrayAccess {
         return static::find($idsList);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function delete()
     {
         $response = FastSpring::delete(static::$endpoint, [$this->getId()]);

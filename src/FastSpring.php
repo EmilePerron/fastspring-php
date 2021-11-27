@@ -2,6 +2,8 @@
 
 namespace Emileperron\FastSpring;
 
+use Emileperron\FastSpring\Exception\NotFoundException;
+
 class FastSpring {
 
     private $host = 'https://api.fastspring.com';
@@ -21,6 +23,9 @@ class FastSpring {
         static::$instance = new static($apiUsername, $apiPassword);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     private function request(string $method, string $endpoint, $payload = null)
     {
         $method = $this->standardizeMethod($method);
@@ -47,7 +52,44 @@ class FastSpring {
             return is_string($response) ? json_decode($response, true) : $response;
         }
 
+        if ($this->isResponseNotFound($response)) {
+            throw new NotFoundException(sprintf('Error %s reported by FastSpring\'s API for your %s request to the "%s" endpoint. Response: %s', $info['http_code'], $method, $endpoint, json_encode($response)));
+        }
+
         throw new \Exception(sprintf('Error %s reported by FastSpring\'s API for your %s request to the "%s" endpoint. Response: %s', $info['http_code'], $method, $endpoint, json_encode($response)));
+    }
+
+    /**
+     * Checks if the body of a response seem to indicate
+     * that the desired entity could not be found.
+     * 
+     * FastSpring doesn't return a 404 HTTP code when they
+     * cannot find an entity: they return a 400 Bad Request 
+     * with a generic error message in the body. This method
+     * attempts to detect if the provided response's body
+     * contains said error message, indicating that it should
+     * actually be a 404 Not Found.
+     */
+    protected function isResponseNotFound($response)
+    {
+        try {
+            $decodedResponse = is_string($response) ? json_decode($response, true) : $response;
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        $containsNotFoundString = false;
+        $containsErrorResult = false;
+        
+        array_walk_recursive($decodedResponse, function ($value, $key) {
+            if ($key == "result" && $value == "error") {
+                $containsErrorResult = true;
+            } else if ($value == "Not found") {
+                $containsNotFoundString = true;
+            }
+        });
+
+        return $containsErrorResult && $containsNotFoundString;
     }
 
     protected static function instance()
@@ -59,21 +101,33 @@ class FastSpring {
         return static::$instance;
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function get(string $endpoint, $payload = null)
     {
         return static::instance()->request('GET', $endpoint, $payload);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function post(string $endpoint, $payload = null)
     {
         return static::instance()->request('POST', $endpoint, $payload);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function put(string $endpoint, $payload = null)
     {
         return static::instance()->request('PUT', $endpoint, $payload);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public static function delete(string $endpoint, $payload = null)
     {
         return static::instance()->request('DELETE', $endpoint, $payload);
