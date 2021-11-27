@@ -5,16 +5,16 @@ namespace Emileperron\FastSpring;
 class FastSpring {
 
     private $host = 'https://api.fastspring.com';
-	private $apiUsername;
-	private $apiPassword;
+    private $apiUsername;
+    private $apiPassword;
 
     private static $instance = null;
 
-	private function __construct(string $apiUsername, string $apiPassword)
+    private function __construct(string $apiUsername, string $apiPassword)
     {
-		$this->apiUsername = $apiUsername;
-		$this->apiPassword = $apiPassword;
-	}
+        $this->apiUsername = $apiUsername;
+        $this->apiPassword = $apiPassword;
+    }
 
     public static function initialize(string $apiUsername, string $apiPassword)
     {
@@ -27,23 +27,23 @@ class FastSpring {
         $url = $this->buildUrl($method, $endpoint, $payload);
         $payload = $this->standardizePayload($payload);
 
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_USERPWD, $this->apiUsername . ':' . $this->apiPassword);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->apiUsername . ':' . $this->apiPassword);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36');
-		curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         if ($method == 'POST') {
-    		curl_setopt($ch, CURLOPT_POST, 1);
-    		curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         } else if ($method != 'GET') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         }
 
-		$response = curl_exec($ch);
-		$info = curl_getinfo($ch);
+        $response = curl_exec($ch);
+        $info = curl_getinfo($ch);
 
-		if ($info['http_code'] == 200) {
+        if ($info['http_code'] == 200) {
             return is_string($response) ? json_decode($response, true) : $response;
         }
 
