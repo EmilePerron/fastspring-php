@@ -2,6 +2,8 @@
 
 namespace Emileperron\FastSpring;
 
+use Emileperron\FastSpring\Exception\NotFoundException;
+
 abstract class AbstractEntity implements \ArrayAccess {
 
     protected $record = [];
